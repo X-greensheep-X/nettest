@@ -1,5 +1,5 @@
 # nettest
-runs a variety of tests to diagnose network issues:<br />
+runs a variety of tests to assist in diagnosis of network issues:<br />
  1.) check for a NIC in UP state<br />
  2.) check for a NIC with an IP address<br />
  3.) check if there is a default gateway in the routing table<br />

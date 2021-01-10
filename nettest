@@ -1,0 +1,75 @@
+#! /bin/bash
+# Brandon Vincent 1/10/21
+# runs a variety of tests to diagnose network issues
+# syntax: nettest [-e]
+
+if [ "$1" == "-e" ]
+then
+	doExit=true
+else
+	doExit=false
+fi
+
+if [ -n "$(ifconfig | grep RUNNING)" ]
+then
+  echo -e "any NIC is up ............ \e[32m\e[7mYES\e[27m\e[39m" # checks to see if any NIC is currently in RUNNING state
+else
+  echo -e "any NIC is up ............ \e[7m\e[31mNO\e[39m\e[27m"
+  if $doExit; then exit; fi
+fi
+
+if [ -n "$(ifconfig | grep broadcast)" ]
+then
+  echo -e "NIC has IP ............... \e[32m\e[7mYES\e[27m\e[39m" # checks to see if any NIC has a DHCP address
+else
+  echo -e "NIC has IP ............... \e[7m\e[31mNO\e[39m\e[27m"
+  if $doExit; then exit; fi
+fi
+
+gateway=$(route | grep default | xargs | cut -d " " -f 2) # checks for a default gateway in the routing table
+if [ -n "$gateway" ]
+then
+  echo -e "routing table check ...... \e[32m\e[7mPASS\e[27m\e[39m"
+else
+  echo -e "routing table check ...... \e[7m\e[31mFAIL\e[39m\e[27m"
+  if $doExit; then exit; fi
+fi
+
+if [ -n "$(ping -4 $gateway -c 1 2>/dev/null | grep '1 received')" ] #pings gateway
+then
+  echo -e "gateway ping ............. \e[32m\e[7mPASS\e[27m\e[39m"
+else
+  echo -e "gateway ping ............. \e[7m\e[31mFAIL\e[39m\e[27m"
+  if $doExit; then exit; fi
+fi
+
+if [ -n "$(ping 8.8.8.8 -c 1 2>/dev/null | grep '1 received')" ] # pings google's DNS
+then
+  echo -e "google ping .............. \e[32m\e[7mPASS\e[27m\e[39m"
+else
+  echo -e "google ping .............. \e[7m\e[31mFAIL\e[39m\e[27m"
+  if $doExit; then exit; fi
+fi
+
+if [ -z "$(nslookup google.com | grep "** server")" ] # check if current DNS can resolve google.com NOTE: this assumes that you are using an outside DNS
+then
+  echo -e "usable DNS ............... \e[32m\e[7mYES\e[27m\e[39m"
+else
+  echo -e "usable DNS ............... \e[7m\e[31mNO\e[39m\e[27m"
+ if [ -n "$(ping $(cat /etc/resolv.conf | grep nameserver | cut -d " " -f 2) -c 1 2>/dev/null | grep '1 received')" ]
+  then
+    echo -e "reachable DNS ............ \e[32m\e[7mYES\e[27m\e[39m"
+  else
+    echo -e "reachable DNS ............ \e[7m\e[31mNO\e[39m\e[27m"
+  fi
+  if $doExit; then exit; fi
+fi
+
+if [ "$(wget -qO- https://pastebin.com/raw/MURsYtKx | grep -c nettest)" -eq 1 ] # grabs a string from pastebin to check if caught by a captive portal or web filter
+then
+  echo -e "webpage get .............. \e[32m\e[7mPASS\e[27m\e[39m"
+else
+  echo -e "webpage get .............. \e[7m\e[31mFAIL\e[39m\e[27m"
+  if $doExit; then exit; fi
+fi
+

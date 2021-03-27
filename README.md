@@ -10,6 +10,6 @@ runs a variety of tests to assist in diagnosis of network issues:<br />
  
 # syntax
 nettest [-e] <br />
- -e exit on failure of any test
+ -e : exit on failure of any test
 # prerequisites
  dnsutils: <code>sudo apt install dnsutils</code>

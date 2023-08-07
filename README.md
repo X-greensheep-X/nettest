@@ -14,5 +14,5 @@ nettest [-e] [--nocolor] <br />
  -e : exit on failure of any test
  --nocolor : don't use ANSI escape codes in output, suitable for use with <code>watch</code>
 # prerequisites
- dnsutils: <code>sudo apt install dnsutils</code>
+ dnsutils: <code>sudo apt install dnsutils</code><br />
  bc : <code>sudo apt install bc</code>

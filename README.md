@@ -7,9 +7,12 @@ runs a variety of tests to assist in diagnosis of network issues:<br />
  5.) ping Google's DNS (8.8.8.8)<br />
  6.) check if nslookup can resolve google.com, if it cant, it will ping the current DNS server<br />
  8.) confirm internet connectivity and test for captive portal or filter by grabbing a webpage (https://pastebin.com/raw/MURsYtKx)<br />
+ 9.) measures packet loss by sending out several pings and measuring how many return within 500ms of transmission<br />
  
 # syntax
-nettest [-e] <br />
+nettest [-e] [--nocolor] <br />
  -e : exit on failure of any test
+ --nocolor : don't use ANSI escape codes in output, suitable for use with <code>watch</code>
 # prerequisites
  dnsutils: <code>sudo apt install dnsutils</code>
+ bc : <code>sudo apt install bc</code>

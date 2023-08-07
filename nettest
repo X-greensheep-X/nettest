@@ -188,13 +188,13 @@ returned=0
 echo -n "["
 for i in $(seq 1 $send)
 do
-        if [ -n "$(ping -W .5 -c 1 1.1.1.1 | grep "1 received")" ]
-        then
-                let returned++
-                echo -n "-"
-        else
-                echo -n "!"
-        fi
+  if [ -n "$(ping -W .5 -c 1 1.1.1.1 | grep "1 received")" ]
+    then
+      let returned++
+      echo -n "-"
+    else
+      echo -n "!"
+  fi
 done
 echo "]"
 
